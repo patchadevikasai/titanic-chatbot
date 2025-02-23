@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from io import BytesIO
 import base64
-import pymysql
-pymysql.install_as_MySQLdb()
+
 app = FastAPI()
 
 # Load the Titanic dataset
