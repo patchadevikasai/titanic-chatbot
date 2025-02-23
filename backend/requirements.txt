@@ -3,3 +3,6 @@ uvicorn
 pandas
 matplotlib
 seaborn
+requests
+streamlit
+langchain
