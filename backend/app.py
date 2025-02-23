@@ -22,8 +22,8 @@ def query(question: str):
         avg_fare = df["Fare"].mean()
         return {"answer": f"The average ticket fare was ${avg_fare:.2f}."}
     
-    elif "how many passengers embarked from each port" in question:
-        embarked_counts = df["Embarked"].value_counts().to_dict()
+    elif "passengers embarked" in question or "passengers from each port" in question:
+        embarked_counts = df["Embarked"].fillna('Unknown').value_counts().to_dict()
         return {"answer": f"Passengers from each port: {embarked_counts}"}
     
     return {"answer": "Question not recognized."}
@@ -37,13 +37,17 @@ def visualize(query: str):
         ax.set_title("Passenger Age Distribution")
     
     elif "passengers embarked from each port" in query:
-        sns.barplot(x=df["Embarked"].value_counts().index, y=df["Embarked"].value_counts().values, ax=ax)
+        sns.barplot(x=df["Embarked"].fillna('Unknown').value_counts().index, 
+                    y=df["Embarked"].fillna('Unknown').value_counts().values, ax=ax)
         ax.set_title("Number of Passengers by Embarkation Port")
         ax.set_xlabel("Embarkation Port")
         ax.set_ylabel("Number of Passengers")
     
-    img = BytesIO()
-    plt.savefig(img, format="png")
-    img.seek(0)
-    encoded = base64.b64encode(img.read()).decode()
-    return {"image": encoded}
+    if ax.has_data():
+        img = BytesIO()
+        plt.savefig(img, format="png")
+        img.seek(0)
+        encoded = base64.b64encode(img.read()).decode()
+        return {"image": encoded}
+    else:
+        return {"error": "Visualization type not recognized."}
